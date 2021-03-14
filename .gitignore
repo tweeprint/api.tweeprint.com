@@ -1,0 +1,13 @@
+.DS_Store
+*.sqlite3
+db.sqlite3
+__pycache__
+*.pyc
+*.css*
+uploads/*
+!uploads/.gitkeep
+create_local.py
+env/
+.vscode
+secrets.py
+core/secrets.py

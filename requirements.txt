@@ -1,0 +1,9 @@
+django==2.2.13
+django-cors-headers
+requests
+django-cleanup
+django-timezone-field
+django-htmlmin
+djangorestframework
+django-sass-processor
+libsass
