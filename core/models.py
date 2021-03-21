@@ -51,6 +51,7 @@ class Tweeprint(models.Model):
     link = models.URLField(unique=True)
     tweet_id = models.CharField(max_length=300, blank=True, null=True)
     category = models.CharField(max_length=300, choices=CHOICES)
+    category_slug = models.SlugField(max_length=300, default="", blank=True, null=True)
     score = models.IntegerField(default=0)
     url_ref = models.SlugField(blank=True, null=True, max_length=255)
 
@@ -64,5 +65,5 @@ class Tweeprint(models.Model):
             if self.name:
                 self.url_ref = slugify(self.name)
         self.tweet_id = self.link.split('/')[-1].split('?')[0]
+        self.category_slug = slugify(self.category)
         super(Tweeprint, self).save(*args, **kwargs)
-

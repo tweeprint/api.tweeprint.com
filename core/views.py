@@ -9,15 +9,38 @@ from core.models import *
 from core.secrets import API_TOKEN, STRIPE_API_KEY
 import json
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+
+
+def get_category(request, category):
+    category = serialize('json', Tweeprint.objects.filter(category_slug=category), fields=('id', 'date_added', 'link', 'tweet_id', 'score', 'category', 'category_slug'))
+    return HttpResponse(category, content_type="application/json")
 
 def get_categories(request):
     categories = [t[0] for t in Tweeprint.CHOICES]
     if request.method == 'GET':
         return JsonResponse(categories, safe=False)
 
+def get_used_categories(request):
+    used_categories = {t.category_slug: {'category': t.category, 'slug': t.category_slug} for t in Tweeprint.objects.all()}.values()
+    if request.method == 'GET':
+        return JsonResponse(list(used_categories), safe=False)
+
 def get_tweeprints(request):
     if request.method == 'GET':
-        return JsonResponse([{"id": t.id, "category": t.category, "tweet_id": t.tweet_id} for t in Tweeprint.objects.all()],safe=False)
+        tweeprints = serialize('json', Tweeprint.objects.all(), fields=('id', 'date_added', 'link', 'tweet_id', 'score', 'category', 'category_slug'))
+        return HttpResponse(tweeprints, content_type="application/json")
+
+def get_most_recent(request):
+    if request.method == 'GET':
+        tweeprints = serialize('json', Tweeprint.objects.all().order_by('-date_added'), fields=('id', 'date_added', 'link', 'tweet_id', 'score', 'category', 'category_slug'))
+        return HttpResponse(tweeprints, content_type="application/json")
+
+def get_most_popular(request):
+    if request.method == 'GET':
+        tweeprints = serialize('json', Tweeprint.objects.all().order_by('-score'), fields=('id', 'date_added', 'link', 'tweet_id', 'score', 'category', 'category_slug'))
+        return HttpResponse(tweeprints, content_type="application/json")
+
 
 @csrf_exempt
 def submit(request):
