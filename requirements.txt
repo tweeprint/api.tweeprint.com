@@ -1,4 +1,4 @@
-django==2.2.13
+django
 django-cors-headers
 requests
 django-cleanup
@@ -7,3 +7,4 @@ django-htmlmin
 djangorestframework
 django-sass-processor
 libsass
+tweepy
