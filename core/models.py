@@ -54,7 +54,7 @@ class Tweeprint(models.Model):
     link = models.URLField(unique=True)
     tweet_id = models.CharField(max_length=300, blank=True, null=True)
     tweet_text = models.CharField(max_length=1000, blank=True, null=True)
-    tweet_json = models.CharField(max_length=10000, blank=True, null=True)
+    tweet_json = models.JSONField(null=True)
     category = models.CharField(max_length=300, choices=CHOICES)
     category_slug = models.SlugField(max_length=300, default="", blank=True, null=True)
     score = models.IntegerField(default=0)
