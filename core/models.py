@@ -2,6 +2,9 @@ from django.db import models
 from django.utils import timezone
 from django.template.defaultfilters import slugify
 from django.utils.text import slugify
+import tweepy
+from tweepy.auth import AppAuthHandler
+from .secrets import TWITTER_API_KEY, TWITTER_API_SECRET
 
 class Tweeprint(models.Model):
 
@@ -50,6 +53,8 @@ class Tweeprint(models.Model):
     date_added = models.DateTimeField(default=timezone.now)
     link = models.URLField(unique=True)
     tweet_id = models.CharField(max_length=300, blank=True, null=True)
+    tweet_text = models.CharField(max_length=1000, blank=True, null=True)
+    tweet_json = models.CharField(max_length=10000, blank=True, null=True)
     category = models.CharField(max_length=300, choices=CHOICES)
     category_slug = models.SlugField(max_length=300, default="", blank=True, null=True)
     score = models.IntegerField(default=0)
@@ -57,6 +62,20 @@ class Tweeprint(models.Model):
 
     def __str__(self):
         return (f'{self.link} <{self.category}>')
+
+    def get_tweet(self):
+        auth = AppAuthHandler(TWITTER_API_KEY, TWITTER_API_SECRET)
+        api = tweepy.API(auth)
+        tweet = api.get_status(self.tweet_id, tweet_mode="extended")
+        try:
+            print(tweet.retweeted_status.full_text)
+            self.tweet_text = tweet.retweeted_status.full_text
+        except AttributeError:
+            print(tweet.full_text)
+            self.tweet_text = tweet.full_text
+            self.tweet_json = tweet._json
+        return tweet
+    
 
     def save(self, *args, **kwargs):
         if not self.date_added:
@@ -66,4 +85,5 @@ class Tweeprint(models.Model):
                 self.url_ref = slugify(self.name)
         self.tweet_id = self.link.split('/')[-1].split('?')[0]
         self.category_slug = slugify(self.category)
+        self.get_tweet()
         super(Tweeprint, self).save(*args, **kwargs)

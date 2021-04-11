@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 
 
 def get_category(request, category):
-    category = serialize('json', Tweeprint.objects.filter(category_slug=category), fields=('id', 'date_added', 'link', 'tweet_id', 'score', 'category', 'category_slug'))
+    category = serialize('json', Tweeprint.objects.filter(category_slug=category), fields=('id', 'date_added', 'link', 'tweet_id', 'tweet_json', 'score', 'category', 'category_slug'))
     return HttpResponse(category, content_type="application/json")
 
 def get_categories(request):
@@ -28,17 +28,17 @@ def get_used_categories(request):
 
 def get_tweeprints(request):
     if request.method == 'GET':
-        tweeprints = serialize('json', Tweeprint.objects.all(), fields=('id', 'date_added', 'link', 'tweet_id', 'score', 'category', 'category_slug'))
+        tweeprints = serialize('json', Tweeprint.objects.all(), fields=('id', 'date_added', 'link', 'tweet_id', 'tweet_json', 'score', 'category', 'category_slug'))
         return HttpResponse(tweeprints, content_type="application/json")
 
 def get_most_recent(request):
     if request.method == 'GET':
-        tweeprints = serialize('json', Tweeprint.objects.all().order_by('-date_added'), fields=('id', 'date_added', 'link', 'tweet_id', 'score', 'category', 'category_slug'))
+        tweeprints = serialize('json', Tweeprint.objects.all().order_by('-date_added'), fields=('id', 'date_added', 'link', 'tweet_id', 'tweet_json', 'score', 'category', 'category_slug'))
         return HttpResponse(tweeprints, content_type="application/json")
 
 def get_most_popular(request):
     if request.method == 'GET':
-        tweeprints = serialize('json', Tweeprint.objects.all().order_by('-score'), fields=('id', 'date_added', 'link', 'tweet_id', 'score', 'category', 'category_slug'))
+        tweeprints = serialize('json', Tweeprint.objects.all().order_by('-score'), fields=('id', 'date_added', 'link', 'tweet_id', 'tweet_json', 'score', 'category', 'category_slug'))
         return HttpResponse(tweeprints, content_type="application/json")
 
 
