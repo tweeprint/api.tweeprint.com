@@ -68,10 +68,8 @@ class Tweeprint(models.Model):
         api = tweepy.API(auth)
         tweet = api.get_status(self.tweet_id, tweet_mode="extended")
         try:
-            print(tweet.retweeted_status.full_text)
             self.tweet_text = tweet.retweeted_status.full_text
         except AttributeError:
-            print(tweet.full_text)
             self.tweet_text = tweet.full_text
             self.tweet_json = tweet._json
         return tweet
