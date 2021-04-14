@@ -74,6 +74,9 @@ class Tweeprint(models.Model):
             self.tweet_json = tweet._json
         return tweet
     
+    def update_tweet_json(self):
+        self.save()
+    
 
     def save(self, *args, **kwargs):
         if not self.date_added:
